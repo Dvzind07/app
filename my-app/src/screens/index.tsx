@@ -9,10 +9,23 @@ const [mostrarInput, setMostrarInput] = useState(false);
 const [gastos, setGastos] = useState(300);
 const [valorSaldo, setValorSaldo] = useState('');
 const [valorRetirada, setValorRetirada] = useState('');
+const [movimentacoes, setMovimentacoes] = useState([
+  {
+    id: '1',
+    descricao: 'Mesada',
+    valor: 800,
+    tipo: 'entrada',
+  },
+  {
+    id: '2',
+    descricao: 'Gasto inicial',
+    valor: 300,
+    tipo: 'gasto',
+  },
+]);
   return (
    <View style={styles.container}>
   <Text style={styles.title}>PocketTrack</Text>
-
   <View style={styles.balanceCard}>
     <Text style={styles.balanceLabel}>Saldo disponível</Text>
     <Text style={styles.balance}>R$ {saldo},00</Text>
@@ -31,8 +44,21 @@ const [valorRetirada, setValorRetirada] = useState('');
   </View>
 
 </View>
+
+<Pressable onPress={() => setMostrarInput(true)}>
+    <Text>Adicionar gasto</Text>
+   </Pressable>
+
+<TextInput
+  value={valorSaldo}
+  onChangeText={setValorSaldo}
+  placeholder="Adicionar saldo"
+  keyboardType="numeric"
+/>
+
 {mostrarInput && (
   <View>
+    
     <Text>Digite o valor do gasto:</Text>
 
     <TextInput
@@ -47,12 +73,24 @@ const [valorRetirada, setValorRetirada] = useState('');
 
       setSaldo(saldo - valor);
       setGastos(gastos + valor);
+      setMovimentacoes([
+    ...movimentacoes,
+    {
+      id: Date.now().toString(),
+      descricao: 'Gasto',
+      valor: valor,
+      tipo: 'gasto',
+    },
+  ]);
 
-      setValorGasto('');
-      setMostrarInput(false);
-    }}>
+  setValorGasto('');
+  setMostrarInput(false);
+
+}}>
       <Text>Confirmar gasto</Text>
+    
     </Pressable>
+  
   </View>
 )}
 
@@ -70,7 +108,9 @@ const [valorRetirada, setValorRetirada] = useState('');
   setValorSaldo('');
 }}>
   <Text>+ Adicionar saldo</Text>
+
 </Pressable>
+
 <TextInput
   value={valorRetirada}
   onChangeText={setValorRetirada}
@@ -85,6 +125,19 @@ const [valorRetirada, setValorRetirada] = useState('');
   setValorRetirada('');
 }}>
   <Text>- Tirar saldo</Text>
+
 </Pressable>
+
+<Text>Últimas movimentações</Text>
+
+{movimentacoes.map((movimentacao) => (
+  <View key={movimentacao.id}>
+    
+    <Text>{movimentacao.descricao}</Text>
+    <Text>R$ {movimentacao.valor},00</Text>
+  
+  </View>
+))}
+  
   </View>
 )}
